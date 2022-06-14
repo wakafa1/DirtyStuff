@@ -3,8 +3,8 @@ import platform
 import json
 
 
-gem5_cpt_top = '/home/zyy/expri_results'
-emu_cpt_top = '/bigdata/zyy/checkpoints_profiles'
+gem5_cpt_top = '/nfs-nvme/home/share/checkpoints_profiles/'
+emu_cpt_top = '/nfs-nvme/home/share/checkpoints_profiles/'
 
 if 'Local_Cpt_Top' in os.environ:
     cpt_top = os.environ['Local_Cpt_Top']
@@ -21,7 +21,7 @@ else:
 if 'Shared_Result_Top' in os.environ:
     shared_result_top = os.environ['Shared_Result_Top']
 else:
-    shared_result_top = '/home/zyy/expri_results'
+    shared_result_top = '/nfs/home/goulingrui/project/expri_results'
 
 # /path/to/spec2006/benchspec/CPU2006
 spec_cpu_2006_dir = '/no/where'
