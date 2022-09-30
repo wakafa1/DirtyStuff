@@ -11,14 +11,20 @@ from emutasks import EmuTasksConfig
 # `emu` 自动化测试
 
 debug = False
-num_threads = 80
+num_threads = 128
 
 ver = '06'
 # exe = f'/bigdata/ljw/xs-emus/emu'
-exe = f'/nfs/home/goulingrui/emu-0609'
+# exe = f'/nfs/home/goulingrui/emu-faubtb-perf-base-16t'
+exe_threads = 16
+# exe = f'/nfs/home/goulingrui/emu-faubtb-perf-16t'
+exe = f'/nfs/home/goulingrui/emu-faubtb-perf-new-mechanism-16t'
+exe_name = exe.split('/')[-1]
 data_dir = f'{lc.cpt_top}/spec{ver}_rv64gcb_o2_20m/take_cpt/' # cpt dir
 top_output_dir = '/nfs/home/goulingrui/expri_results/' # output dir
-simpoints_file = f'{lc.cpt_top}/spec{ver}_rv64gcb_o2_20m/json/simpoint_summary.json'
+# simpoints_file = f'{lc.cpt_top}/spec{ver}_rv64gcb_o2_20m/json/simpoint_summary.json'
+simpoints_file = f'{lc.cpt_top}/spec{ver}_rv64gcb_o2_20m/json/simpoint_coverage0.3_test.json'
+
 
 workload_filter = []
 
@@ -27,7 +33,8 @@ workload_filter = []
 cpt_desc = CptBatchDescription(data_dir, exe, top_output_dir, ver,
         is_simpoint=True,
         is_uniform=False,
-        simpoints_file=simpoints_file)
+        simpoints_file=simpoints_file,
+        exe_threads=exe_threads)
 
 parser = cpt_desc.parser
 
@@ -38,10 +45,10 @@ args = cpt_desc.parse_args()
 
 date = datetime.now().strftime('%Y-%m-%d')
 CurConf = EmuTasksConfig
-task_name = f'xs_simpoint_batch/SPEC{ver}_{CurConf.__name__}_{date}'
+task_name = f'xs_simpoint_batch/SPEC{ver}_{CurConf.__name__}_{date}_{exe_name}'
 cpt_desc.set_task_filter()
 cpt_desc.set_conf(CurConf, task_name)
-cpt_desc.filter_tasks(hashed=True, n_machines=3)
+cpt_desc.filter_tasks(hashed=False, n_machines=3)
 
 debug_tick = None
 
@@ -65,7 +72,8 @@ for task in cpt_desc.tasks:
     })
     task.format_options(space=True)
 print(f'Output dir {top_output_dir}/{task_name}')
-print(len(cpt_desc.tasks))
+print(len(list(filter(lambda x: x.valid, cpt_desc.tasks))))
+
 
 cpt_desc.set_numactl(selected_cores=list(range(0, num_threads)))
 # exit()

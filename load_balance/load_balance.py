@@ -34,7 +34,10 @@ def write_dispatch_json(task='xiangshan'):
     # print(ryzen_5950x_hosts)
     epyc_hosts = sorted(list(set(hosts)-set(ryzen_5950x_hosts)))
     # open05 - open11
-    epyc_hosts_to_use = ['open'+'{:02d}'.format(i) for i in range(5, 12)]
+    # epyc_hosts_to_use = ['open'+'{:02d}'.format(i) for i in range(5, 12)]
+    # epyc_hosts_to_use = ['open09']
+    # epyc_hosts_to_use = ['open14']
+    epyc_hosts_to_use = ['open27']
     # print(epyc_hosts)
     for host in hosts:
         if host not in epyc_hosts_to_use:   

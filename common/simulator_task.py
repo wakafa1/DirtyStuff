@@ -159,6 +159,8 @@ class SimulatorTask:
                     print("kill process successfully!")
                     print(os.getpgid(proc.pid))
                     os.killpg(os.getpgid(proc.pid), 15)
+                    # proc.terminate()
+                    # sys.exit()
                     return
                 return signal_handler
 
