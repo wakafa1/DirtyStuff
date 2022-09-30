@@ -14,7 +14,7 @@ class SimulatorTask:
     def __init__(
             self, exe: str, top_data_dir: str,
             task_name: str, workload: str, sub_phase: int,
-            avoid_repeat: bool = False,
+            avoid_repeat: bool = False, extra_env: dict = {},
             ):
         # options passing to simulator
         self.direct_options = []
@@ -53,6 +53,14 @@ class SimulatorTask:
         self.second_option = None
         self.second_in_numactl = False
         self.clean_up_list = []
+
+        self.append_env(extra_env)
+
+    def append_env(self, extra_env):
+        self.env = os.environ.copy()
+        for k, v in extra_env.items():
+            if k in self.env:
+                self.env[k] = v + ':' + self.env[k]
 
     def __hash__(self):
         info = f"{self.code_name}"
@@ -140,8 +148,6 @@ class SimulatorTask:
         try:
             runCommand = self.exe + " " + " ".join(self.final_options)
             print('Command:', runCommand)
-            print('Main command options:', self.final_options)
-            # exit()
 
             def signal_handler_wrapper(proc):
                 def signal_handler(signal, frame):
@@ -151,10 +157,8 @@ class SimulatorTask:
                     if not osp.isfile(osp.join(self.log_dir, 'aborted')):
                         os.mknod(osp.join(self.log_dir, 'aborted'))
                     print("kill process successfully!")
-                    # print(os.getpgid(proc.pid))
                     print(os.getpgid(proc.pid))
                     os.killpg(os.getpgid(proc.pid), 15)
-                    # proc.terminate()
                     return
                 return signal_handler
 
@@ -170,12 +174,16 @@ class SimulatorTask:
                 stdout=main_out,
                 stderr=main_err,
                 shell=True,
-                preexec_fn=os.setsid
+                preexec_fn=os.setsid,
+                env=self.env
             )
 
             signal.signal(signal.SIGINT, signal_handler_wrapper(proc))
             signal.signal(signal.SIGTERM, signal_handler_wrapper(proc))
             proc.wait()
+
+            if proc.returncode is not None and proc.returncode != 0:
+                self.abort = True
 
             if self.second_exe is not None:
                 os.chdir(self.second_dir)
@@ -201,7 +209,6 @@ class SimulatorTask:
             self.abort = True
 
         os.chdir(self.work_dir)
-        # print("cleaning status files")
 
         for dirty_file in self.clean_up_list:
             if osp.isfile(dirty_file) or osp.isdir(dirty_file):
@@ -214,7 +221,6 @@ class SimulatorTask:
             subprocess.run(['touch', osp.join(self.log_dir, 'completed')]);
         else:
             subprocess.run(['touch', osp.join(self.log_dir, 'aborted')]);
-        # print("returning")
         return
 
 

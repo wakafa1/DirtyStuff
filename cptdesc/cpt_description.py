@@ -21,7 +21,7 @@ class CptBatchDescription:
             is_uniform=True,
             is_sparse_uniform=False,
             exe_threads=8,
-            use_numa=True
+            use_numa=False
             ):
 
         self.task_whitelist = []
@@ -213,7 +213,6 @@ class CptBatchDescription:
         p = Pool(len(self.numactl_prefixes))
         signal.signal(signal.SIGINT, original_sigint_handler)
         try:
-            # print(self.tasks)
             print(self.numactl_status_list)
             results = [None for t in self.tasks]
             for i in range(len(self.tasks)):
@@ -255,7 +254,6 @@ class CptBatchDescription:
     def run(self, num_threads, debug=False):
         print(f'Run {len(self.tasks)} tasks with {num_threads} threads')
         print(f'{self.use_numactl} use numactl')
-        # exit()
         if num_threads <= 0:
             return
         if debug:
