@@ -309,12 +309,12 @@ class NanhuNoL3(SimulatorTask):
                 '--caches',
                 '--l2cache',
                 '--enable-difftest',
-                '--xiangshan'
+                '--xiangshan-system',
                 ]
         self.add_list_options(self.list_conf)
         self.dict_conf = {
                 '--cpu-type': 'DerivO3CPU',
-                '--mem-type': 'DDR3_1600_8x8',
+                '--mem-type': 'DRAMsim3',
                 '--mem-size': '8GB',
                 '--cacheline_size': 64,
                 '--l1i_size': '128kB',
@@ -346,6 +346,8 @@ class NanhuConfig(NanhuWithRationalL1NoL3):
         self.dict_conf = {
                 '--l3_size': '6MB',
                 '--l3_assoc': 6,
+                '--l2-hwp-type' : 'SMSPrefetcher',
+                '--bp-type' : 'DecoupledBPUWithFTB'
                 }
         self.add_dict_options(self.dict_conf)
 

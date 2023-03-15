@@ -102,7 +102,7 @@ class SimulatorTask:
         self.log_dir = f'{self.top_data_dir}/{self.task_name}/{self.workload}/'
 
     def sub_workload_level_path_format(self):
-        self.log_dir = f'{self.top_data_dir}/{self.task_name}/{self.workload}/{self.sub_phase_id}/'
+        self.log_dir = f'{self.top_data_dir}/{self.task_name}/{self.workload}_{self.sub_phase_id}/'
 
     def set_trivial_workdir(self):
         self.work_dir = self.log_dir
