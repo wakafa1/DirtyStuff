@@ -115,9 +115,12 @@ task.add_dict_options({
     '--generic-rv-cpt': workload,
     '--dramsim3-ini': '/nfs-nvme/home/wangkaifan/xs/gem5/GEM5-internal/xiangshan_DDR4_8Gb_x8_2400.ini',
 })
-task.add_direct_options([
-    '--raw-cpt'
-])
+
+if not workload[-3:] == ".gz":
+    task.add_direct_options([
+        '--raw-cpt'
+    ])
+
 task.format_options()
 
 task_wrapper(task)
