@@ -89,7 +89,7 @@ task = CurConf(
 
 task.sub_workload_level_path_format()
 task.set_trivial_workdir()
-task.avoid_repeat = True
+task.avoid_repeat = False
 
 if len(debug_flags):
     df_str = '--debug-flags=' + ','.join(debug_flags)
@@ -122,6 +122,7 @@ if not workload[-3:] == ".gz":
     ])
 
 task.format_options()
+task.set_output2file(False)
 
 task_wrapper(task)
 print(f'Finished simulation')

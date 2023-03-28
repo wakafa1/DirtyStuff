@@ -26,6 +26,7 @@ class SimulatorTask:
         self.work_dir = None
         self.log_dir = None
         self.extra_dir = None
+        self.output2file = True
 
         # print(top_data_dir)
         assert osp.isdir(top_data_dir)
@@ -116,6 +117,9 @@ class SimulatorTask:
         print(f'numactl -m {self.numa_node} -C {self.cores}:')
         return sh.numactl.bake('-m', self.numa_node, '-C', self.cores)
 
+    def set_output2file(self, flag):
+        self.output2file = flag
+
     def run(self):
         assert self.work_dir is not None
         assert self.log_dir is not None
@@ -171,14 +175,19 @@ class SimulatorTask:
             print(runCommand)
             main_out = open(osp.join(self.log_dir, 'main_out.txt'), "w")
             main_err = open(osp.join(self.log_dir, 'main_err.txt'), "w")
-            proc = subprocess.Popen(
-                runCommand,
-                stdout=main_out,
-                stderr=main_err,
-                shell=True,
-                preexec_fn=os.setsid,
-                env=self.env
-            )
+            if self.output2file:
+                proc = subprocess.Popen(
+                    runCommand,
+                    stdout=main_out,
+                    stderr=main_err,
+                    shell=True,
+                    preexec_fn=os.setsid,
+                    env=self.env
+                )
+            else:
+                proc = subprocess.Popen(
+                    runCommand, shell=True, preexec_fn=os.setsid, env=self.env
+                )
 
             signal.signal(signal.SIGINT, signal_handler_wrapper(proc))
             signal.signal(signal.SIGTERM, signal_handler_wrapper(proc))
