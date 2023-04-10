@@ -28,7 +28,8 @@ top_output_dir = '/nfs-nvme/home/wangkaifan/xs/gem5/gem5-results' # output dir
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-d', '--debug-tick', action='store', type=int)
+parser.add_argument('-t', '--debug-tick', action='store', type=int)
+parser.add_argument('-d', '--debug', action='store_true', default=None)
 parser.add_argument('-C', '--config', action='store', type=str)
 parser.add_argument('-n', '--name', action='store', type=str)
 parser.add_argument('-w', '--workload', action='store', type=str)
@@ -72,8 +73,10 @@ backend_flags = omega_flags + check_flags + mem_flags + nosq_flags + dq_flags + 
         inst_flags + fault_flags
 frontend_flags = fetch_flags + fault_flags + inst_flags
 
-debug_flags = []
 debug_tick = None
+debug_flags = []
+if args.debug:
+    debug_flags = ['Cache']
 
 if args.debug_tick is not None:
     debug_tick = args.debug_tick
