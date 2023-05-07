@@ -346,7 +346,7 @@ class NanhuConfig(NanhuWithRationalL1NoL3):
         self.dict_conf = {
                 '--l3_size': '6MB',
                 '--l3_assoc': 6,
-                '--l2-hwp-type' : 'SMSPrefetcher',
+                '--l2-hwp-type' : 'MultiPrefetcher',
                 '--bp-type' : 'DecoupledBPUWithFTB'
                 }
         self.add_dict_options(self.dict_conf)
