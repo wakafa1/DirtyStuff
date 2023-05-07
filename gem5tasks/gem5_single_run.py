@@ -30,6 +30,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-t', '--debug-tick', action='store', type=int)
 parser.add_argument('-d', '--debug', action='store_true', default=None)
+parser.add_argument('-f', '--debug-file', action='store', type=str)
 parser.add_argument('-C', '--config', action='store', type=str)
 parser.add_argument('-n', '--name', action='store', type=str)
 parser.add_argument('-w', '--workload', action='store', type=str)
@@ -75,8 +76,12 @@ frontend_flags = fetch_flags + fault_flags + inst_flags
 
 debug_tick = None
 debug_flags = []
+debug_file = None
 if args.debug:
-    debug_flags = ['Cache']
+    debug_flags = ['CacheAll', 'RiscvMisc']
+
+if args.debug_file:
+    debug_file = args.debug_file
 
 if args.debug_tick is not None:
     debug_tick = args.debug_tick
@@ -96,6 +101,10 @@ task.avoid_repeat = False
 
 if len(debug_flags):
     df_str = '--debug-flags=' + ','.join(debug_flags)
+    task.add_direct_options([df_str])
+
+if debug_file is not None:
+    df_str = '--debug-file=' + debug_file
     task.add_direct_options([df_str])
 
 if debug_tick is not None:
