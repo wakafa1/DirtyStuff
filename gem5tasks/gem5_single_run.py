@@ -17,15 +17,6 @@ from common.simulator_task import SimulatorTask, task_wrapper
 
 debug = False
 
-# The root dir of GEM5
-# gem5_base = '/nfs-nvme/home/zhouyaoyang/projects/xs-gem5'
-gem5_base = '/nfs-nvme/home/wangkaifan/xs/gem5/GEM5-internal'
-exe = f'{gem5_base}/build/RISCV/gem5.opt'
-fs_script = f'{gem5_base}/configs/example/fs.py'
-
-# The directory to store GEM5 outputs (logs, configs, and stats)
-top_output_dir = '/nfs-nvme/home/wangkaifan/xs/gem5/gem5-results' # output dir
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-t', '--debug-tick', action='store', type=int)
@@ -34,8 +25,19 @@ parser.add_argument('-f', '--debug-file', action='store', type=str)
 parser.add_argument('-C', '--config', action='store', type=str)
 parser.add_argument('-n', '--name', action='store', type=str)
 parser.add_argument('-w', '--workload', action='store', type=str)
+parser.add_argument('-g', '--gem5', action='store', type=str)
 
 args = parser.parse_args()
+
+# The root dir of GEM5
+# gem5_base = '/nfs-nvme/home/zhouyaoyang/projects/xs-gem5'
+assert args.gem5 is not None
+gem5_base = '/nfs-nvme/home/wangkaifan/xs/gem5/' + args.gem5
+exe = f'{gem5_base}/build/RISCV/gem5.opt'
+fs_script = f'{gem5_base}/configs/example/fs.py'
+
+# The directory to store GEM5 outputs (logs, configs, and stats)
+top_output_dir = '/nfs-nvme/home/wangkaifan/xs/gem5/gem5-results' # output dir
 
 if args.config is not None:
     # You can input the config from command line

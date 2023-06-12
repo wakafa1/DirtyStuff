@@ -16,14 +16,28 @@ import gem5tasks.typical_o3_config as tc
 debug = False
 
 # The number of threads
-num_threads = 64
+num_threads = 128
 
 # SPEC 17 or 06
 ver = '06'
 
+# Debug cmc
+cmc = 1
+
+parser = cpt_desc.parser
+
+parser.add_argument('-d', '--debug-tick', action='store', type=int)
+parser.add_argument('-C', '--config', action='store', type=str)
+parser.add_argument('-n', '--name', action='store', type=str)
+parser.add_argument('-t', '--threads', action='store', type=int)
+parser.add_argument('-g', '--gem5', action='store', type=str)
+
+args = cpt_desc.parse_args()
+
 # The root dir of GEM5
 # gem5_base = '/nfs-nvme/home/zhouyaoyang/projects/xs-gem5'
-gem5_base = '/nfs-nvme/home/wangkaifan/xs/gem5/GEM5-internal'
+assert args.gem5 is not None
+gem5_base = '/nfs-nvme/home/wangkaifan/xs/gem5/' + args.gem5
 exe = f'{gem5_base}/build/RISCV/gem5.opt'
 fs_script = f'{gem5_base}/configs/example/fs.py'
 
@@ -36,6 +50,9 @@ data_dir = '/nfs-nvme/home/share/checkpoints_profiles/spec06_rv64gcb_o2_20m/take
 # The directory to store GEM5 outputs (logs, configs, and stats)
 top_output_dir = '/nfs-nvme/home/wangkaifan/xs/gem5/gem5-results' # output dir
 
+# Checkpoint description json
+simpoints_json = "resources/simpoint_cpt_desc/simpoints06_cmc_sensitive.json" if cmc==1 else "/nfs-nvme/home/share/checkpoints_profiles/spec06_rv64gcb_o2_20m/json/simpoint_coverage0.8_test.json"
+
 cpt_desc = CptBatchDescription(data_dir, exe, top_output_dir, ver,
         is_simpoint=True,  # Set it True when you are using checkpoints taken with NEMU and SimPoint method
         is_uniform=False,  # Set it False unless you carefully read the source code of this project
@@ -44,18 +61,9 @@ cpt_desc = CptBatchDescription(data_dir, exe, top_output_dir, ver,
         # The checkpoint filter indicates whick checkpoints should be executed
         # The checkpoint filter is loaded from a json file, to local_config.py to see details
         # simpoints_file="resources/simpoint_cpt_desc/simpoints06_branch_picks.json",
-        simpoints_file="/nfs-nvme/home/share/checkpoints_profiles/spec06_rv64gcb_o2_20m/json/simpoint_coverage0.8_test.json",    
+        simpoints_file=simpoints_json,    
         # simpoints_file="resources/simpoint_cpt_desc/simpoints06_icache_sensitive.json",
         )
-
-parser = cpt_desc.parser
-
-parser.add_argument('-d', '--debug-tick', action='store', type=int)
-parser.add_argument('-C', '--config', action='store', type=str)
-parser.add_argument('-n', '--name', action='store', type=str)
-parser.add_argument('-t', '--threads', action='store', type=int)
-
-args = cpt_desc.parse_args()
 
 if args.config is not None:
     # You can input the config from command line
