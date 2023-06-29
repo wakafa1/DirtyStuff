@@ -158,7 +158,7 @@ class SimulatorTask:
                     self.abort = True
                     if osp.isfile(osp.join(self.log_dir, 'running')):
                         os.remove(osp.join(self.log_dir, 'running'))
-                    if not ops.isfile(osp.join(self.log_dir, 'completed')):
+                    if not osp.isfile(osp.join(self.log_dir, 'completed')):
                         if not osp.isfile(osp.join(self.log_dir, 'aborted')):
                             os.mknod(osp.join(self.log_dir, 'aborted'))
                     print("kill process successfully!")
